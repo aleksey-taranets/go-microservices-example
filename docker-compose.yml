@@ -1,0 +1,26 @@
+version: '2'
+services:
+  deepstream:
+    build: ./deepstream
+    ports:
+      - '6020:6020'
+  db:
+    build: ./db
+    volumes:
+      - './db/pgdata:/pgdata'
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DB=chat
+      - PGDATA=/pgdata
+  api:
+    build: ./user-api
+    volumes:
+      - ./api:/go/src/user-api
+    ports:
+      - "3000:8080"
+    links:
+      - db
+      - deepstream
